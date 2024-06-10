@@ -11,7 +11,7 @@ from langchain_groq import ChatGroq
 def main():
     load_dotenv()
     llm = ChatGroq(
-        temperature=0,
+        temperature=0.2,
         api_key=os.environ.get('GROQLLAMA370b_API_KEY'), 
         model = "llama3-70b-8192"
     )
@@ -36,18 +36,18 @@ def main():
     tasks = CoverLetterTasks()
     agents = CoverLetterAgents()
 
-    
+
     # create agents
     research_agent = agents.job_researcher(scrape_tool = tools.scrape_tool, llm=llm)
     profile_agent = agents.personal_profiler(read_resume = tools.read_resume, llm=llm)
     writer_agent = agents.cover_letter_writer(llm=llm)
-    
+
     # create tasks
     research_task = tasks.job_posting_task(research_agent, job_posting_url)
     profile_task = tasks.personal_profile_task(profile_agent, personal_statement, job_posting_task = research_task)
     cover_letter_task = tasks.cover_letter_crafting_task(writer_agent, job_posting_task = research_task, personal_profile_task = profile_task)
-    
-    
+
+
     crew = Crew(
       agents=[
         research_agent,
