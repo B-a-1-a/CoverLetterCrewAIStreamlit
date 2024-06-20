@@ -6,8 +6,6 @@ from agents import CoverLetterAgents
 from tools import CoverLetterTools
 from langchain_groq import ChatGroq
 
-
-
 def main():
     load_dotenv()
     llm = ChatGroq(
@@ -28,41 +26,44 @@ def main():
     languages and frameworks. With an MBA and a robust foundation in artificial intelligence and data science, Sam has spearheaded 
     significant technological projects and startup ventures, showcasing his capacity to foster innovation and propel industry growth. 
     His skills make him perfectly suited for executive positions that demand strategic thinking and a creative, forward-thinking mindset. """
-    #job_posting_url = ''
+    #job_posting_url = 'https://jobs.lever.co/AIFund/6c82e23e-d954-4dd8-a734-c0c2c5ee00f1?lever-origin=applied&lever-source%5B%5D=AI+Fund'
     # Build UI Later
 
+    urls = [job_posting_url]
 
-    tools = CoverLetterTools(filePath=file_path, url=job_posting_url)
-    tasks = CoverLetterTasks()
-    agents = CoverLetterAgents()
+    i = 0
+    for currurl in urls: 
+      i += 1
 
+      tools = CoverLetterTools(filePath=file_path, url=currurl)
+      tasks = CoverLetterTasks()
+      agents = CoverLetterAgents()
 
-    # create agents
-    research_agent = agents.job_researcher(scrape_tool = tools.scrape_tool, llm=llm)
-    profile_agent = agents.personal_profiler(read_resume = tools.read_resume, llm=llm)
-    writer_agent = agents.cover_letter_writer(llm=llm)
+      # create agents
+      research_agent = agents.job_researcher(scrape_tool = tools.scrape_tool, llm=llm)
+      profile_agent = agents.personal_profiler(read_resume = tools.read_resume, llm=llm)
+      writer_agent = agents.cover_letter_writer(llm=llm)
 
-    # create tasks
-    research_task = tasks.job_posting_task(research_agent, job_posting_url)
-    profile_task = tasks.personal_profile_task(profile_agent, personal_statement, job_posting_task = research_task)
-    cover_letter_task = tasks.cover_letter_crafting_task(writer_agent, job_posting_task = research_task, personal_profile_task = profile_task)
+      # create tasks
+      research_task = tasks.job_posting_task(research_agent, currurl)
+      profile_task = tasks.personal_profile_task(profile_agent, personal_statement, job_posting_task = research_task)
+      cover_letter_task = tasks.cover_letter_crafting_task(writer_agent, job_posting_task = research_task, personal_profile_task = profile_task, url="{i}")
 
+      crew = Crew(
+        agents=[
+          research_agent,
+          profile_agent,
+          writer_agent
+        ],
+        tasks=[
+          research_task,
+          profile_task,
+          cover_letter_task,
+        ]
+      )
 
-    crew = Crew(
-      agents=[
-        research_agent,
-        profile_agent,
-        writer_agent
-      ],
-      tasks=[
-        research_task,
-        profile_task,
-        cover_letter_task,
-      ]
-    )
-
-    result = crew.kickoff()
-    print(result)
+      result = crew.kickoff()
+      print(result)
 
     
 if __name__ == "__main__":

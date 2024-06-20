@@ -26,7 +26,7 @@ class CoverLetterTasks():
             agent=agent
         )
     
-    def cover_letter_crafting_task(self, agent, job_posting_task: Task, personal_profile_task: Task):
+    def cover_letter_crafting_task(self, agent, job_posting_task: Task, personal_profile_task: Task, url: str):
         return Task(
                 description=dedent(
                             "Using the personal profile and job requirements obtained from "
@@ -38,7 +38,7 @@ class CoverLetterTasks():
                             "All to better reflect the candidates abilities and how it matches the job posting."
                 ),
                 expected_output=dedent("""A clean coverletter that effectively highlights the candidate's skills and traits relevant to the job."""),
-                output_file="coverletter.txt",
+                output_file= f"item{url}.txt",
                 context = [job_posting_task, personal_profile_task],
                 agent=agent
             )
