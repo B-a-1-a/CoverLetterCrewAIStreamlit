@@ -6,7 +6,7 @@ class CoverLetterAgents():
     def job_researcher(self, scrape_tool, llm):
         return Agent(
             role="Tech Job Researcher",
-            goal="Do great analysis on job posting to help applicants",
+            goal="Seperate the necessary qualifications and skills sought by the posting.",
             tools = [scrape_tool],
             verbose=True,
             backstory=(

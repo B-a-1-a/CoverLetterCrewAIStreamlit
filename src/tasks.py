@@ -4,8 +4,8 @@ from crewai import Task
 class CoverLetterTasks():
     def job_posting_task(self, agent, url: str):
         return Task(
-            description=dedent(f"Analyze the job posting URL provided {url} "
-            "to extract key technical skills, experiences, and qualifications required. Also, if present, gather information about responsibilities of the role. "
+            description=dedent(f"Scrape the job posting URL provided {url} to extract text data related to a job information. "
+            "From the scraped text extract key technical skills, experiences, and qualifications required. Also, if present, gather information about responsibilities of the role. "
             "Finally take a note of any communication skills, leadership skills, soft-skills or company mission/values. " 
             "Use the scraping tool to gather content and identify and categorize the requirements."),   
             expected_output=dedent("""4 Things: 
@@ -14,7 +14,7 @@ class CoverLetterTasks():
                                 3. A list of company values and soft skills.
                                 4. Any other relevant information extracted from the job posting URL."""),
             agent=agent
-        )
+        ) 
   
     def personal_profile_task(self, agent, writup: str, job_posting_task: Task):
         return Task(
